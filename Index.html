@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Shared Pad</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🌍 Public Shared Pad</h1>
+  <textarea id="sharedText" placeholder="Start typing..."></textarea>
+
+  <script type="module">
+    import { db, ref, onValue, set } from './firebase.js';
+
+    const textarea = document.getElementById('sharedText');
+    const textRef = ref(db, 'sharedContent');
+
+    onValue(textRef, (snapshot) => {
+      const data = snapshot.val();
+      if (textarea.value !== data) {
+        textarea.value = data;
+      }
+    });
+
+    textarea.addEventListener('input', () => {
+      set(textRef, textarea.value);
+    });
+  </script>
+</body>
+</html>
